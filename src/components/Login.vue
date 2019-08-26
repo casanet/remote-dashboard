@@ -11,14 +11,17 @@
       </div>
 
       <div class="form">
-        <md-field>
+        <md-field :class="getValidationClass('email')">
           <label>E-mail</label>
           <md-input v-model="login.email" autofocus></md-input>
+          <span class="md-error" v-if="!$v.login.email.required">The email is required</span>
+          <span class="md-error" v-else-if="!$v.login.email.email">Invalid email</span>
         </md-field>
 
-        <md-field md-has-password>
+        <md-field md-has-password :class="getValidationClass('password')">
           <label>Password</label>
           <md-input v-model="login.password" type="password"></md-input>
+          <span class="md-error" v-if="!$v.login.password.required">The password is required</span>
         </md-field>
       </div>
 
@@ -37,8 +40,12 @@
 <script>
 import restResource from "../services/rest-resource";
 
+import { validationMixin } from "vuelidate";
+import { required, email } from "vuelidate/lib/validators";
+
 export default {
   name: "login",
+  mixins: [validationMixin],
   data() {
     return {
       loading: false,
@@ -48,15 +55,42 @@ export default {
       }
     };
   },
+  validations: {
+    login: {
+      email: {
+        required,
+        email
+      },
+      password: {
+        required
+      }
+    }
+  },
   methods: {
+    getValidationClass(fieldName) {
+      const field = this.$v.login[fieldName];
+
+      if (field) {
+        return {
+          "md-invalid": field.$invalid && field.$dirty
+        };
+      }
+    },
     async auth() {
+      this.$v.$touch();
+
+      if (this.$v.$invalid) {
+        return;
+      }
       this.loading = true;
 
       try {
         await restResource.login(this.login.email, this.login.password);
         this.$router.push("/dashboard");
       } catch (error) {
-        this.$snotify.error('username or password incorrect', 'Login failed');
+        this.login.password = "";
+        this.$v.$reset();
+        this.$snotify.error("username or password incorrect", "Login failed");
       }
       this.loading = false;
     }
