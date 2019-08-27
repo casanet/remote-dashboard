@@ -35,6 +35,7 @@
         md-sort="name"
         md-sort-order="asc"
         md-fixed-header
+        md-height="100%"
         @md-selected="onSelect"
       >
         <!-- Table toolbar -->
@@ -200,6 +201,6 @@ export default {
 <style scoped>
 .servers-table {
   max-width: calc(100vw - 25px);
-  height: 80vh;
+  height: calc(100vh - 100px);
 }
 </style>
