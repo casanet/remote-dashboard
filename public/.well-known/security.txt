@@ -1,0 +1,5 @@
+This server build by an open-source project at https://github.com/casanet/remote-dashboard 
+and the API server at https://github.com/casanet/remote-server .
+If you would like to report a security issue in the code-base please open an issue in the repositories,
+or contact me directly via my profile https://github.com/haimkastner .
+Thanks!
