@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Warniing message before generating dialog -->
+    <!-- Warning message before generating dialog -->
     <md-card v-if="!submit">
       <md-progress-bar md-mode="indeterminate" v-if="sending" />
       <md-card-header>
