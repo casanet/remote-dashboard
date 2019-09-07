@@ -5,7 +5,7 @@
         <img src="@/assets/logo.png" />
         <div class="md-title">Remote dashboard</div>
         <div class="md-body-1">
-          Welcom to the
+          Welcome to the
           <a target="_blank" href="https://github.com/casanet/remote-server">casanet</a> remote server admins dashboard
         </div>
       </div>
