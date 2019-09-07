@@ -125,8 +125,8 @@ class RestResource {
 
       this.handleResponse(response, false);
     } catch (error) {
-      console.warn('login to the admininstarion panel fail. ' + (error || ''));
-      throw new Error('login to the admininstarion panel fail.');
+      console.warn('login to the administration panel fail. ' + (error || ''));
+      throw new Error('login to the administration panel fail.');
     }
   }
 
@@ -143,8 +143,8 @@ class RestResource {
 
       this.handleResponse(response);
     } catch (error) {
-      console.warn('logout to the admininstarion panel fail. ' + (error || ''));
-      throw new Error('logout to the admininstarion panel fail.');
+      console.warn('logout to the administration panel fail. ' + (error || ''));
+      throw new Error('logout to the administration panel fail.');
     }
   }
 
