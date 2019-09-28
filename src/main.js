@@ -12,7 +12,7 @@ import 'vue-material/dist/theme/default.css'
 
 Vue.use(VueMaterial)
 
-/** Import vue-snotify notifincation lib */
+/** Import vue-snotify notification lib */
 import Snotify from 'vue-snotify';
 Vue.use(Snotify, {
   toast : {
@@ -21,11 +21,11 @@ Vue.use(Snotify, {
   }
 });
 
-/** Import form validation lib */
+/** Import from validation lib */
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate);
 
-/** Bootsrape the app */
+/** Bootstrap the app */
 new Vue({
   el: '#app',
   router,
