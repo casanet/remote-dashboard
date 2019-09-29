@@ -3,7 +3,7 @@
     <md-card>
       <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
-      <md-subheader>Edit contact user of the {{localServer.displayName}} local server</md-subheader>
+      <md-subheader>Edit contact email of the {{localServer.displayName}} local server</md-subheader>
 
       <md-card-content>
         <md-field :class="getValidationClass()">
@@ -82,7 +82,7 @@ export default {
           macAddress: this.localServer.macAddress,
           displayName: this.localServer.displayName,
           validUsers: [...this.localServer.validUsers],
-          contactMail: this.contactMail ? this.contactMail : '', 
+          contactMail: this.contactMail ? this.contactMail : ""
         });
         this.$snotify.success("The local server contact successfully saved");
         this.$emit("finished", true);
@@ -95,9 +95,13 @@ export default {
       this.$emit("finished");
     }
   },
+  mounted() {
+    /** If the local server prop already passed, copy the contact, for next edit */
+    this.contactMail = this.localServer ? this.localServer.contactMail : "";
+  },
   watch: {
     localServer(newVal) {
-      /** If the local server prop changed, copy the new valid users, for next edit */
+      /** If the local server prop changed, copy the contact, for next edit */
       this.contactMail = newVal ? newVal.contactMail : "";
     }
   }
