@@ -45,7 +45,7 @@
       </md-card-content>
 
       <md-card-actions>
-        <md-button @click="finished" class="md-primary">I'm finished</md-button>
+        <md-button @click="finishedAndRefresh" class="md-primary">I'm finished</md-button>
       </md-card-actions>
     </md-card>
 
@@ -110,6 +110,9 @@ export default {
     },
     finished() {
       this.$emit("finished");
+    },
+    finishedAndRefresh() {
+      this.$emit("finished", true);
     },
     copyKeyToClipboard() {
       copyStringToClipboard(this.generatedKey);

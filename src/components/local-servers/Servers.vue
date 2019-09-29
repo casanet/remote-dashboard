@@ -14,6 +14,10 @@
     <md-dialog v-if="validUsersServerDialog" :md-active.sync="validUsersServerDialog">
       <valid-users :localServer="selectedServer" @finished="onDialogClosed" />
     </md-dialog>
+    <!-- Edit contact dialog -->
+    <md-dialog v-if="contactServerDialog" :md-active.sync="contactServerDialog">
+      <contact :localServer="selectedServer" @finished="onDialogClosed" />
+    </md-dialog>
     <!-- Remove local server dialog -->
     <md-dialog-confirm
       :md-active.sync="removeServerDialog"
@@ -42,6 +46,10 @@
         <md-table-toolbar>
           <!-- Create new local server button -->
           <div class="md-toolbar-section-start">
+            <md-button class="md-icon-button" @click="getServers">
+              <md-icon>refresh</md-icon>
+              <md-tooltip md-direction="bottom">Refresh servers table</md-tooltip>
+            </md-button>
             <md-button class="md-icon-button" @click="createServerDialog = true">
               <md-icon>add</md-icon>
               <md-tooltip md-direction="bottom">Create a new server</md-tooltip>
@@ -91,6 +99,12 @@
             </md-button>
           </md-table-cell>
           <md-table-cell>
+            <md-button class="md-icon-button" @click="contactServerDialog = true">
+              <md-icon>contact_mail</md-icon>
+              <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' contact</md-tooltip>
+            </md-button>
+          </md-table-cell>
+          <md-table-cell>
             <md-button class="md-icon-button" @click="removeServerDialog = true">
               <md-icon>delete</md-icon>
               <md-tooltip md-direction="bottom">Remove the '{{ item.displayName }}' local server</md-tooltip>
@@ -107,6 +121,7 @@ import restResource from "../../services/rest-resource";
 import AddServer from "@/components/local-servers/dialogs/AddServer.vue";
 import KeyGenerator from "@/components/local-servers/dialogs/KeyGenerator.vue";
 import ValidUsers from "@/components/local-servers/dialogs/ValidUsers.vue";
+import Contact from "@/components/local-servers/dialogs/Contact.vue";
 
 const toLower = text => {
   return text.toString().toLowerCase();
@@ -137,7 +152,8 @@ export default {
   components: {
     AddServer,
     KeyGenerator,
-    ValidUsers
+    ValidUsers,
+    Contact
   },
   data() {
     return {
@@ -145,6 +161,7 @@ export default {
       generateKeyServerDialog: false,
       removeServerDialog: false,
       validUsersServerDialog: false,
+      contactServerDialog: false,
       selectedServer: {},
       search: null,
       servers: [],
@@ -162,6 +179,8 @@ export default {
       this.generateKeyServerDialog = false;
       this.removeServerDialog = false;
       this.validUsersServerDialog = false;
+      this.contactServerDialog = false;
+
       if (requireRefresh) {
         await this.getServers();
       }

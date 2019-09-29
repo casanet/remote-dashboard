@@ -3,6 +3,11 @@ const publicAPIPath = process.env.VUE_APP_API_URL || 'http://127.0.0.1:3001';
 class RestResource {
 
   handleResponse(response, reidrectOnForbidden = true) {
+
+    if (response.status === 422){
+      throw new Error(response.status);      
+    }
+    
     const primaryStatusCode = response.status && parseInt(response.status / 100);
 
     if (reidrectOnForbidden && primaryStatusCode === 4) {
