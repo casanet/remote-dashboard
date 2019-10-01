@@ -35,11 +35,18 @@
           <md-textarea v-model="generatedKey" readonly></md-textarea>
           <md-button class="md-icon-button" @click="copyKeyToClipboard">
             <md-icon>assignment</md-icon>
-            <md-tooltip md-direction="bottom">Copy to clipboard</md-tooltip>
+            <md-tooltip md-direction="bottom">Copy to the clipboard</md-tooltip>
           </md-button>
         </md-field>
-        <b>
-          KEEP GENERATED KEY PRIVATE AND SECURE,
+        <p>
+          To finish the authorization process, at the local server dashboard, open 
+          settings -> remote server -> edit connection, 
+          then in the dialog paste the remote server URI
+          (it's should be <a :href="serverWebSocketsURI">{{ serverWebSocketsURI }}</a>)
+          then paste the above-generated API code, and submit.
+        </p>
+        <b> 
+          REMEMBER! KEEP GENERATED KEY PRIVATE AND SECURE,
           PUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!
         </b>
       </md-card-content>
@@ -88,11 +95,17 @@ export default {
     localServer: Object
   },
   data: () => ({
+    serverWebSocketsURI : '',
     showCopySnackbar: false,
     generatedKey: "",
     submit: false,
     sending: false
   }),
+  created: function () {
+    /** Extract the WS URI of the remote server from the API URL */
+    const originalRemoteServerURL = process.env.VUE_APP_API_URL || 'http://127.0.0.1:3001';
+    this.serverWebSocketsURI = 'ws' + originalRemoteServerURL.substring(4, originalRemoteServerURL.length);
+  },
   methods: {
     async generate() {
       this.sending = true;
