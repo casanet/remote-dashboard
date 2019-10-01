@@ -195,6 +195,9 @@ export default {
       this.loading = true;
       try {
         this.servers = await restResource.getServers();
+        this.servers.sort((itemA, itemB) => {
+          return itemA.displayName < itemB.displayName ? -1 : 1;
+        });
       } catch (error) {
         this.$snotify.error("Retrieving local servers failed");
         this.servers = [];
