@@ -10,6 +10,12 @@
     <md-dialog :md-active.sync="generateKeyServerDialog">
       <key-generator :localServer="selectedServer" @finished="onDialogClosed" />
     </md-dialog>
+
+    <!-- Edit display name dialog -->
+    <md-dialog v-if="editNameDialog" :md-active.sync="editNameDialog">
+      <edit-display-name :localServer="selectedServer" @finished="onDialogClosed" />
+    </md-dialog>
+
     <!-- Edit valid users dialog -->
     <md-dialog v-if="validUsersServerDialog" :md-active.sync="validUsersServerDialog">
       <valid-users :localServer="selectedServer" @finished="onDialogClosed" />
@@ -78,24 +84,38 @@
             <div v-else>❗</div>
           </md-table-cell>
           <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
-          <md-table-cell md-label="Name" md-sort-by="displayName">{{ item.displayName }}</md-table-cell>
+          <md-table-cell md-label="Name" md-sort-by="displayName">
+            <div class="md-layout md-gutter md-alignment-center">
+              <div class="md-layout-item">{{ item.displayName }}</div>
+              <div class="md-layout-item md-size-40">
+                <md-button class="md-icon-button md-raised" @click="editNameDialog = true">
+                  <md-icon>edit</md-icon>
+                  <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' display name</md-tooltip>
+                </md-button>
+              </div>
+            </div>
+          </md-table-cell>
           <md-table-cell md-label="Valid users">
-            <ul>
-              <li v-for="(user, i) in item.validUsers" :key="i">{{user}}</li>
-            </ul>
+            <div class="md-layout md-gutter md-alignment-center">
+              <div class="md-layout-item">
+                <ul>
+                  <li v-for="(user, i) in item.validUsers" :key="i">{{user}}</li>
+                </ul>
+              </div>
+              <div class="md-layout-item md-size-25">
+                <md-button class="md-icon-button md-raised" @click="validUsersServerDialog = true">
+                  <md-icon>edit</md-icon>
+                  <md-tooltip
+                    md-direction="bottom"
+                  >Edit the '{{ item.displayName }}' valid forward users</md-tooltip>
+                </md-button>
+              </div>
+            </div>
           </md-table-cell>
           <md-table-cell>
             <md-button class="md-icon-button" @click="generateKeyServerDialog = true">
               <md-icon>lock</md-icon>
               <md-tooltip md-direction="bottom">Generate a new API key</md-tooltip>
-            </md-button>
-          </md-table-cell>
-          <md-table-cell>
-            <md-button class="md-icon-button" @click="validUsersServerDialog = true">
-              <md-icon>edit</md-icon>
-              <md-tooltip
-                md-direction="bottom"
-              >Edit the '{{ item.displayName }}' valid forward users</md-tooltip>
             </md-button>
           </md-table-cell>
           <md-table-cell>
@@ -122,6 +142,7 @@ import AddServer from "@/components/local-servers/dialogs/AddServer.vue";
 import KeyGenerator from "@/components/local-servers/dialogs/KeyGenerator.vue";
 import ValidUsers from "@/components/local-servers/dialogs/ValidUsers.vue";
 import Contact from "@/components/local-servers/dialogs/Contact.vue";
+import EditDisplayName from "@/components/local-servers/dialogs/EditDisplayName.vue";
 
 const toLower = text => {
   return text.toString().toLowerCase();
@@ -153,7 +174,8 @@ export default {
     AddServer,
     KeyGenerator,
     ValidUsers,
-    Contact
+    Contact,
+    EditDisplayName
   },
   data() {
     return {
@@ -162,6 +184,7 @@ export default {
       removeServerDialog: false,
       validUsersServerDialog: false,
       contactServerDialog: false,
+      editNameDialog: false,
       selectedServer: {},
       search: null,
       servers: [],
@@ -180,6 +203,7 @@ export default {
       this.removeServerDialog = false;
       this.validUsersServerDialog = false;
       this.contactServerDialog = false;
+      this.editNameDialog = false;
 
       if (requireRefresh) {
         await this.getServers();
