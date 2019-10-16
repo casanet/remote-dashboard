@@ -79,16 +79,16 @@
         </md-empty-state>
 
         <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single">
-          <md-table-cell md-label="Status" md-sort-by="connectionStatus">
-            <div v-if="item.connectionStatus">✅</div>
+          <md-table-cell md-label="Status" md-sort-by="connectionStringStatus">
+            <div v-if="item.connectionStringStatus === 'true'">✔️</div>
             <div v-else>❗</div>
           </md-table-cell>
           <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="displayName">
-            <div class="md-layout md-gutter md-alignment-center">
-              <div class="md-layout-item">{{ item.displayName }}</div>
-              <div class="md-layout-item md-size-40">
-                <md-button class="md-icon-button md-raised" @click="editNameDialog = true">
+            <div class="md-layout md-gutter md-alignment-center-space-between">
+              <div class="md-layout-item md-size-70">{{ item.displayName }}</div>
+              <div class="md-layout-item md-size-20">
+                <md-button class="md-icon-button" @click="editNameDialog = true">
                   <md-icon>edit</md-icon>
                   <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' display name</md-tooltip>
                 </md-button>
@@ -96,14 +96,14 @@
             </div>
           </md-table-cell>
           <md-table-cell md-label="Valid users">
-            <div class="md-layout md-gutter md-alignment-center">
-              <div class="md-layout-item">
+            <div class="md-layout md-gutter md-alignment-center-space-between">
+              <div class="md-layout-item md-size-80">
                 <ul>
                   <li v-for="(user, i) in item.validUsers" :key="i">{{user}}</li>
                 </ul>
               </div>
-              <div class="md-layout-item md-size-25">
-                <md-button class="md-icon-button md-raised" @click="validUsersServerDialog = true">
+              <div class="md-layout-item md-size-10">
+                <md-button class="md-icon-button" @click="validUsersServerDialog = true">
                   <md-icon>edit</md-icon>
                   <md-tooltip
                     md-direction="bottom"
@@ -112,20 +112,20 @@
               </div>
             </div>
           </md-table-cell>
-          <md-table-cell>
-            <md-button class="md-icon-button" @click="generateKeyServerDialog = true">
+          <md-table-cell md-label="Generate API Code">
+            <md-button class="md-icon-button md-raised" @click="generateKeyServerDialog = true">
               <md-icon>lock</md-icon>
               <md-tooltip md-direction="bottom">Generate a new API key</md-tooltip>
             </md-button>
           </md-table-cell>
-          <md-table-cell>
-            <md-button class="md-icon-button" @click="contactServerDialog = true">
+          <md-table-cell md-label="Set Contact">
+            <md-button class="md-icon-button md-raised" @click="contactServerDialog = true">
               <md-icon>contact_mail</md-icon>
               <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' contact</md-tooltip>
             </md-button>
           </md-table-cell>
-          <md-table-cell>
-            <md-button class="md-icon-button" @click="removeServerDialog = true">
+          <md-table-cell md-label="Remove">
+            <md-button class="md-icon-button md-raised" @click="removeServerDialog = true">
               <md-icon>delete</md-icon>
               <md-tooltip md-direction="bottom">Remove the '{{ item.displayName }}' local server</md-tooltip>
             </md-button>
@@ -219,6 +219,17 @@ export default {
       this.loading = true;
       try {
         this.servers = await restResource.getServers();
+
+        /**
+         * The default rows sorter dont know how to handle boolians,
+         * so translate it to an string.
+         */
+        this.servers.forEach(
+          server =>
+            (server.connectionStringStatus = server.connectionStatus.toString())
+        );
+
+        /** As default sort by name */
         this.servers.sort((itemA, itemB) => {
           return itemA.displayName < itemB.displayName ? -1 : 1;
         });
