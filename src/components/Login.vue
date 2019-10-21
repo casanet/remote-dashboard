@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <div class="form">
+      <div class="form" v-if="!isMfaMode">
         <md-field :class="getValidationClass('email')">
           <label>E-mail</label>
           <md-input v-model="login.email" autofocus></md-input>
@@ -22,6 +22,15 @@
           <label>Password</label>
           <md-input v-model="login.password" type="password"></md-input>
           <span class="md-error" v-if="!$v.login.password.required">The password is required</span>
+        </md-field>
+      </div>
+      <div class="form" v-else>
+        <md-field :class="getValidationClass('mfa')">
+          <md-icon>lock</md-icon>
+          <label>MFA code:</label>
+          <md-input v-model="mfa" autofocus maxlength="6"></md-input>
+          <span class="md-error" v-if="!$v.mfa.required">The MFA code is required</span>
+          <span class="md-error" v-else-if="!$v.mfa.minLength">MFA code should be 6 characters long</span>
         </md-field>
       </div>
 
@@ -41,7 +50,7 @@
 import restResource from "../services/rest-resource";
 
 import { validationMixin } from "vuelidate";
-import { required, email } from "vuelidate/lib/validators";
+import { required, email, minLength } from "vuelidate/lib/validators";
 
 export default {
   name: "login",
@@ -49,10 +58,12 @@ export default {
   data() {
     return {
       loading: false,
+      isMfaMode: false,
       login: {
         email: "",
         password: ""
-      }
+      },
+      mfa: "000000"
     };
   },
   validations: {
@@ -64,11 +75,15 @@ export default {
       password: {
         required
       }
+    },
+    mfa: {
+      required,
+      minLength: minLength(6)
     }
   },
   methods: {
     getValidationClass(fieldName) {
-      const field = this.$v.login[fieldName];
+      const field = this.$v.login[fieldName] || this.$v[fieldName];
 
       if (field) {
         return {
@@ -84,13 +99,33 @@ export default {
       }
       this.loading = true;
 
-      try {
-        await restResource.login(this.login.email, this.login.password);
-        this.$router.push("/dashboard");
-      } catch (error) {
-        this.login.password = "";
-        this.$v.$reset();
-        this.$snotify.error("username or password incorrect", "Login failed");
+      if (this.isMfaMode) {
+        try {
+          await restResource.loginMfa(this.login.email, this.login.password, this.mfa);
+          this.$router.push("/dashboard");
+        } catch (error) {
+          this.mfa = "";
+          this.$v.$reset();
+          this.$snotify.error("MFA code incorrect", "Login failed");
+        }
+      } else {
+        try {
+          this.isMfaMode = await restResource.login(
+            this.login.email,
+            this.login.password
+          );
+
+          if (!this.isMfaMode) {
+            this.$router.push("/dashboard");
+          } else {
+            this.$v.$reset();
+            this.mfa = "";
+          }
+        } catch (error) {
+          this.login.password = "";
+          this.$v.$reset();
+          this.$snotify.error("username or password incorrect", "Login failed");
+        }
       }
       this.loading = false;
     }

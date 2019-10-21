@@ -129,9 +129,35 @@ class RestResource {
       });
 
       this.handleResponse(response, false);
+
+      return response.status === 201;
     } catch (error) {
       console.warn('login to the administration panel fail. ' + (error || ''));
       throw new Error('login to the administration panel fail.');
+    }
+  }
+
+  async loginMfa(email, password, mfaCode) {
+    try {
+      const response = await fetch(`${publicAPIPath}/API/administration/auth/login/tfa`, {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+          mfaCode,
+        })
+      });
+      
+      this.handleResponse(response, false);
+
+    } catch (error) {
+      console.warn('login mfa to the administration panel fail. ' + (error || ''));
+      throw new Error('login mfa to the administration panel fail.');
     }
   }
 
