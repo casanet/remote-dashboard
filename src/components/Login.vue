@@ -27,7 +27,7 @@
       <div class="form" v-else>
         <md-field :class="getValidationClass('mfa')">
           <md-icon>lock</md-icon>
-          <label>MFA code:</label>
+          <label>MFA code</label>
           <md-input v-model="mfa" autofocus maxlength="6"></md-input>
           <span class="md-error" v-if="!$v.mfa.required">The MFA code is required</span>
           <span class="md-error" v-else-if="!$v.mfa.minLength">MFA code should be 6 characters long</span>
