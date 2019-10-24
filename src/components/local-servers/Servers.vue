@@ -83,7 +83,6 @@
             <div v-if="item.connectionStringStatus === 'true'">✔️</div>
             <div v-else>❗</div>
           </md-table-cell>
-          <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="displayName">
             <div class="md-layout md-gutter md-alignment-center-space-between">
               <div class="md-layout-item md-size-70">{{ item.displayName }}</div>
@@ -95,6 +94,7 @@
               </div>
             </div>
           </md-table-cell>
+          <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
           <md-table-cell md-label="Valid users">
             <div class="md-layout md-gutter md-alignment-center-space-between">
               <div class="md-layout-item md-size-80">
