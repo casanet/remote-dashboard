@@ -80,8 +80,14 @@
 
         <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single">
           <md-table-cell md-label="Status" md-sort-by="connectionStringStatus">
-            <div v-if="item.connectionStringStatus === 'true'">✔️</div>
-            <div v-else>❗</div>
+            <div v-if="item.connectionStringStatus === 'true'">
+              ✔️
+              <md-tooltip md-direction="bottom">Connected At {{ item.lastConnection }}</md-tooltip>
+            </div>
+            <div v-else>
+              ❗
+              <md-tooltip md-direction="bottom">Disconnected At {{ item.lastDisconnection }}</md-tooltip>
+            </div>
           </md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="displayName">
             <div class="md-layout md-gutter md-alignment-center-space-between">
@@ -168,6 +174,15 @@ const filterServers = (items, term) => {
   return items;
 };
 
+const formatConnectionTime = utcTime => {
+  if (!utcTime) {
+    return "--:--:--";
+  }
+
+  const time = new Date(utcTime);
+  return `${time.getDate()}/${time.getMonth() +
+    1} ${time.toLocaleTimeString()}`;
+};
 export default {
   name: "servers",
   components: {
@@ -228,6 +243,13 @@ export default {
           server =>
             (server.connectionStringStatus = server.connectionStatus.toString())
         );
+
+        this.servers.forEach(server => {
+          server.lastConnection = formatConnectionTime(server.lastConnection);
+          server.lastDisconnection = formatConnectionTime(
+            server.lastDisconnection
+          );
+        });
 
         /** As default sort by name */
         this.servers.sort((itemA, itemB) => {
