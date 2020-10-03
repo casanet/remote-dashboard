@@ -20,7 +20,8 @@ class RestResource {
 
     if (redirectOnForbidden && primaryStatusCode === 4) {
       history.replaceState(undefined, undefined, "#login");
-      // location.reload();
+      // Temp fix, in future, use the inner router for it.
+      location.reload();
       return;
     }
     if (primaryStatusCode !== 2) {
