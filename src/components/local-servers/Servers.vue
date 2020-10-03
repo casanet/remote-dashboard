@@ -44,7 +44,6 @@
         v-model="searched"
         md-sort="name"
         md-sort-order="asc"
-        md-fixed-header
         md-height="100%"
         @md-selected="onSelect"
       >
@@ -101,19 +100,16 @@
             </div>
           </md-table-cell>
           <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
-          <md-table-cell md-label="Valid users">
+          <md-table-cell md-label="Version" md-sort-by="version">{{ item.version }}</md-table-cell>
+          <md-table-cell md-label="Platform" md-sort-by="platform">{{ item.platform }}</md-table-cell>
+          <md-table-cell md-label="Forward users">
             <div class="md-layout md-gutter md-alignment-center-space-between">
-              <div class="md-layout-item md-size-80">
-                <ul>
-                  <li v-for="(user, i) in item.validUsers" :key="i">{{user}}</li>
-                </ul>
-              </div>
               <div class="md-layout-item md-size-10">
-                <md-button class="md-icon-button" @click="validUsersServerDialog = true">
-                  <md-icon>edit</md-icon>
+                <md-button class="md-icon-button md-raised" @click="validUsersServerDialog = true">
+                  <md-icon>supervisor_account</md-icon>
                   <md-tooltip
                     md-direction="bottom"
-                  >Edit the '{{ item.displayName }}' valid forward users</md-tooltip>
+                  >Show & edit the '{{ item.displayName }}' valid forward users</md-tooltip>
                 </md-button>
               </div>
             </div>
@@ -128,6 +124,12 @@
             <md-button class="md-icon-button md-raised" @click="contactServerDialog = true">
               <md-icon>contact_mail</md-icon>
               <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' contact</md-tooltip>
+            </md-button>
+          </md-table-cell>
+          <md-table-cell md-label="Fetch logs">
+            <md-button class="md-icon-button md-raised" @click="onDownloadLogs(item)">
+              <md-icon>get_app</md-icon>
+              <md-tooltip md-direction="bottom">Fetch the '{{ item.displayName }}' logs</md-tooltip>
             </md-button>
           </md-table-cell>
           <md-table-cell md-label="Remove">
@@ -163,6 +165,8 @@ const filterServers = (items, term) => {
         item =>
           toLower(item.macAddress).includes(term) ||
           toLower(item.displayName).includes(term) ||
+          (item.platform && toLower(item.platform).includes(term)) ||
+          (item.version && toLower(item.version).includes(term)) ||
           (item.validUsers &&
             0 <
               item.validUsers.filter(user => toLower(user).includes(term))
@@ -271,6 +275,13 @@ export default {
       } catch (error) {
         this.$snotify.error("Remove the local server failed");
         await this.onDialogClosed(false);
+      }
+    },
+    async onDownloadLogs(server) {
+      try {
+        await restResource.downloadLogs(server);
+      } catch (error) {
+        this.$snotify.error("The local server logs download failed");
       }
     }
   }
