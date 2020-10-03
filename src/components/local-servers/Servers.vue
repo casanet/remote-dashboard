@@ -173,7 +173,9 @@ const filterServers = (items, term) => {
                 .length)
       );
     }
-  } catch (error) {}
+  } catch (error) {
+    // console.log(error);
+  }
 
   return items;
 };

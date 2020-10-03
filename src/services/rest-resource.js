@@ -37,7 +37,7 @@ class RestResource {
       this.handleResponse(response);
       return await response.json();
     } catch (error) {
-      console.warn("get servers fail. " + (error || ""));
+      // console.warn("get servers fail. " + (error || ""));
       throw new Error("get servers fail");
     }
   }
@@ -60,7 +60,7 @@ class RestResource {
 
       this.handleResponse(response);
     } catch (error) {
-      console.warn("add a local server fail. " + (error || ""));
+      // console.warn("add a local server fail. " + (error || ""));
       throw new Error("add a local server fail");
     }
   }
@@ -82,9 +82,7 @@ class RestResource {
       this.handleResponse(response);
       return await response.json();
     } catch (error) {
-      console.warn(
-        "generate API key for a local server fail. " + (error || "")
-      );
+      // console.warn("generate API key for a local server fail. " + (error || ""));
       throw new Error("generate API key for a local server fail.");
     }
   }
@@ -105,7 +103,7 @@ class RestResource {
 
       this.handleResponse(response);
     } catch (error) {
-      console.warn("remove a local server fail. " + (error || ""));
+      // console.warn("remove a local server fail. " + (error || ""));
       throw new Error("remove a local server fail.");
     }
   }
@@ -127,7 +125,7 @@ class RestResource {
 
       this.handleResponse(response);
     } catch (error) {
-      console.warn("edit a local server fail. " + (error || ""));
+      // console.warn("edit a local server fail. " + (error || ""));
       throw new Error("edit a local server fail.");
     }
   }
@@ -154,7 +152,7 @@ class RestResource {
 
       return response.status === 201;
     } catch (error) {
-      console.warn("login to the administration panel fail. " + (error || ""));
+      // console.warn("login to the administration panel fail. " + (error || ""));
       throw new Error("login to the administration panel fail.");
     }
   }
@@ -180,9 +178,7 @@ class RestResource {
 
       this.handleResponse(response, false);
     } catch (error) {
-      console.warn(
-        "login mfa to the administration panel fail. " + (error || "")
-      );
+      // console.warn("login mfa to the administration panel fail. " + (error || ""));
       throw new Error("login mfa to the administration panel fail.");
     }
   }
@@ -202,7 +198,7 @@ class RestResource {
 
       this.handleResponse(response);
     } catch (error) {
-      console.warn("logout to the administration panel fail. " + (error || ""));
+      // console.warn("logout to the administration panel fail. " + (error || ""));
       throw new Error("logout to the administration panel fail.");
     }
   }
@@ -227,8 +223,8 @@ class RestResource {
         blobData
       );
     } catch (error) {
-      console.warn("edit a local server fail. " + (error || ""));
-      throw new Error("edit a local server fail.");
+      // console.warn("download local server logs fail. " + (error || ""));
+      throw new Error("download local server logs fail.");
     }
   }
 }
