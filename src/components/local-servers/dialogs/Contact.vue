@@ -42,7 +42,7 @@
 import restResource from "../../../services/rest-resource";
 
 import { validationMixin } from "vuelidate";
-import { required, email } from "vuelidate/lib/validators";
+import { email } from "vuelidate/lib/validators";
 
 export default {
   name: "Contact",
