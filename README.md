@@ -2,7 +2,7 @@
 
 set `VUE_APP_API_URL` environment variable to the remote server URL before building. 
 
-otherways the default is `http://127.0.0.1:3001`.
+Otherwise the default is `http://127.0.0.1:3001`.
 
 ## Screenshot
 ![Screenshot](./docs/screenshot.png)

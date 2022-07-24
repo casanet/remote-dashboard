@@ -3,36 +3,34 @@
     <md-card>
       <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
-      <md-subheader>Edit contact email of the {{localServer.displayName}} local server</md-subheader>
+      <md-subheader>Edit the comment of the {{localServer.displayName}} local server</md-subheader>
 
       <md-card-content>
         <md-field :class="getValidationClass()">
-          <label for="email">The contact email</label>
+          <label for="comment">The Comment</label>
           <md-input
-            type="email"
-            name="email"
-            id="email"
-            autocomplete="email"
-            v-model="contactMail"
+            name="comment"
+            id="comment"
+            v-model="comment"
             :disabled="sending"
           />
-          <span class="md-error" v-if="!$v.contactMail.email">Invalid email</span>
+          <span class="md-error" v-if="!$v.comment.required">The comment is required</span>
 
           <md-button
             class="md-icon-button md-list-action"
-            @click="contactMail = localServer.contactMail"
+            @click="comment = localServer.comment"
           >
             <md-icon>refresh</md-icon>
             <md-tooltip
               md-direction="bottom"
-            >Reset to the current {{localServer.displayName}} contact</md-tooltip>
+            >Reset to the current {{localServer.displayName}} comment</md-tooltip>
           </md-button>
         </md-field>
       </md-card-content>
 
       <md-card-actions>
         <md-button @click="finished">Cancel</md-button>
-        <md-button @click="updateContact" class="md-primary">Update contact</md-button>
+        <md-button @click="updateContact" class="md-primary">Update Comment</md-button>
       </md-card-actions>
     </md-card>
   </div>
@@ -42,26 +40,26 @@
 import restResource from "../../../services/rest-resource";
 
 import { validationMixin } from "vuelidate";
-import { email } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 
 export default {
-  name: "Contact",
+  name: "EditComment",
   mixins: [validationMixin],
   props: {
     localServer: Object
   },
   data: () => ({
-    contactMail: "",
+    comment: "",
     sending: false
   }),
   validations: {
-    contactMail: {
-      email
+    comment: {
+      required
     }
   },
   methods: {
     getValidationClass() {
-      const field = this.$v.contactMail;
+      const field = this.$v.comment;
 
       if (field) {
         return {
@@ -82,13 +80,13 @@ export default {
           macAddress: this.localServer.macAddress,
           displayName: this.localServer.displayName,
           validUsers: [...this.localServer.validUsers],
-          contactMail: this.contactMail ? this.contactMail : "",
-          comment: this.localServer.comment || "",
+          contactMail: this.localServer.contactMail || "",
+          comment: this.comment,
         });
-        this.$snotify.success("The local server contact successfully saved");
+        this.$snotify.success("The local server comment successfully saved");
         this.$emit("finished", true);
       } catch (error) {
-        this.$snotify.error("Edit the local server contact failed");
+        this.$snotify.error("Edit the local server comment failed");
         this.finished();
       }
     },
@@ -98,12 +96,12 @@ export default {
   },
   mounted() {
     /** If the local server prop already passed, copy the contact, for next edit */
-    this.contactMail = this.localServer ? this.localServer.contactMail : "";
+    this.comment = this.localServer ? this.localServer.comment : "";
   },
   watch: {
     localServer(newVal) {
       /** If the local server prop changed, copy the contact, for next edit */
-      this.contactMail = newVal ? newVal.contactMail : "";
+      this.comment = newVal ? newVal.comment : "";
     }
   }
 };
