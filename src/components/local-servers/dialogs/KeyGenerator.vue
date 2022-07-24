@@ -4,7 +4,7 @@
     <md-card v-if="!submit">
       <md-progress-bar md-mode="indeterminate" v-if="sending" />
       <md-card-header>
-        <div class="md-title">Generate an API key to {{localServer.displayName}}</div>
+        <div class="md-title">Generate an API key to {{ localServer.displayName }}</div>
       </md-card-header>
 
       <md-card-content>
@@ -26,7 +26,7 @@
     <!-- Show generated key dialog -->
     <md-card v-else>
       <md-card-header>
-        <div class="md-title">The generated API key for {{localServer.displayName}}</div>
+        <div class="md-title">The generated API key for {{ localServer.displayName }}</div>
       </md-card-header>
 
       <md-card-content>
@@ -39,13 +39,21 @@
           </md-button>
         </md-field>
         <p>
-          To finish the authorization process, at the local server dashboard, open 
-          settings -> remote server -> edit connection, 
+          To finish the authorization process, at the local server dashboard, open
+          settings -> remote server -> edit connection,
           then in the dialog paste the remote server URI
-          (it's should be <a :href="serverWebSocketsURI">{{ serverWebSocketsURI }}</a>)
+          (it's should be <a :href="serverWebSocketsURI">{{ serverWebSocketsURI }}</a>
+          <span>
+            <md-button class="md-icon-button md-dense md-primary" @click="copyURLToClipboard">
+              <md-icon>assignment</md-icon>
+              <md-tooltip md-direction="bottom">Copy to the clipboard</md-tooltip>
+            </md-button>
+          </span>
+          )
+
           then paste the above-generated API code, and submit.
         </p>
-        <b> 
+        <b>
           REMEMBER! KEEP GENERATED KEY PRIVATE AND SECURE,
           PUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!
         </b>
@@ -56,14 +64,13 @@
       </md-card-actions>
     </md-card>
 
-    <md-snackbar
-      md-position="center"
-      :md-duration="5000"
-      :md-active.sync="showCopySnackbar"
-      md-persistent
-    >
+    <md-snackbar md-position="center" :md-duration="5000" :md-active.sync="showCopySnackbar" md-persistent>
       <span>The generated API key copied to the clipboard, BE CAREFUL!</span>
       <md-button class="md-primary" @click="showCopySnackbar = false">OK</md-button>
+    </md-snackbar>
+    <md-snackbar md-position="center" :md-duration="5000" :md-active.sync="showCopyURLSnackbar" md-persistent>
+      <span>The WS URL "{{serverWebSocketsURI}}" copied to the clipboard</span>
+      <md-button class="md-primary" @click="showCopyURLSnackbar = false">OK</md-button>
     </md-snackbar>
   </div>
 </template>
@@ -95,8 +102,9 @@ export default {
     localServer: Object
   },
   data: () => ({
-    serverWebSocketsURI : '',
+    serverWebSocketsURI: '',
     showCopySnackbar: false,
+    showCopyURLSnackbar: false,
     generatedKey: "",
     submit: false,
     sending: false
@@ -130,6 +138,10 @@ export default {
     copyKeyToClipboard() {
       copyStringToClipboard(this.generatedKey);
       this.showCopySnackbar = true;
+    },
+    copyURLToClipboard() {
+      copyStringToClipboard(this.serverWebSocketsURI);
+      this.showCopyURLSnackbar = true;
     }
   }
 };
