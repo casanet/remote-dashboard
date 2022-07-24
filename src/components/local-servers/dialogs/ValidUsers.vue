@@ -89,7 +89,8 @@ export default {
           macAddress: this.localServer.macAddress,
           displayName: this.localServer.displayName,
           validUsers: [...this.validUsers],
-          contactMail : this.localServer.contactMail || ""
+          contactMail : this.localServer.contactMail || "",
+          comment: this.localServer.comment || "",
         });
         this.$snotify.success("The local server valid users successfully saved");
         this.$emit("finished", true);

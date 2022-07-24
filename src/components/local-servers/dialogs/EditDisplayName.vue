@@ -80,7 +80,8 @@ export default {
           macAddress: this.localServer.macAddress,
           displayName: this.displayName,
           validUsers: [...this.localServer.validUsers],
-          contactMail: this.localServer.contactMail || ""
+          contactMail: this.localServer.contactMail || "",
+          comment: this.localServer.comment || "",
         });
         this.$snotify.success("The local server display name successfully saved");
         this.$emit("finished", true);

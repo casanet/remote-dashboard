@@ -16,6 +16,11 @@
       <edit-display-name :localServer="selectedServer" @finished="onDialogClosed" />
     </md-dialog>
 
+    <!-- Edit comment dialog -->
+    <md-dialog v-if="editCommentDialog" :md-active.sync="editCommentDialog">
+      <edit-comment :localServer="selectedServer" @finished="onDialogClosed" />
+    </md-dialog>
+
     <!-- Edit valid users dialog -->
     <md-dialog v-if="validUsersServerDialog" :md-active.sync="validUsersServerDialog">
       <valid-users :localServer="selectedServer" @finished="onDialogClosed" />
@@ -99,6 +104,17 @@
               </div>
             </div>
           </md-table-cell>
+          <md-table-cell md-label="Free Comment">
+            <div class="md-layout md-gutter md-alignment-center-space-between">
+              <div class="md-layout-item md-size-70">{{ item.comment }}</div>
+              <div class="md-layout-item md-size-20">
+                <md-button class="md-icon-button" @click="editCommentDialog = true">
+                  <md-icon>comment</md-icon>
+                  <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' comment</md-tooltip>
+                </md-button>
+              </div>
+            </div>
+          </md-table-cell>
           <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
           <md-table-cell md-label="Version" md-sort-by="version">{{ item.version }}</md-table-cell>
           <md-table-cell md-label="Platform" md-sort-by="platform">{{ item.platform }}</md-table-cell>
@@ -114,13 +130,13 @@
               </div>
             </div>
           </md-table-cell>
-          <md-table-cell md-label="Generate API Code">
+          <md-table-cell md-label="Generate API Key">
             <md-button class="md-icon-button md-raised" @click="generateKeyServerDialog = true">
               <md-icon>lock</md-icon>
               <md-tooltip md-direction="bottom">Generate a new API key</md-tooltip>
             </md-button>
           </md-table-cell>
-          <md-table-cell md-label="Set Contact">
+          <md-table-cell md-label="Contact">
             <md-button class="md-icon-button md-raised" @click="contactServerDialog = true">
               <md-icon>contact_mail</md-icon>
               <md-tooltip md-direction="bottom">Edit the '{{ item.displayName }}' contact</md-tooltip>
@@ -151,6 +167,7 @@ import KeyGenerator from "@/components/local-servers/dialogs/KeyGenerator.vue";
 import ValidUsers from "@/components/local-servers/dialogs/ValidUsers.vue";
 import Contact from "@/components/local-servers/dialogs/Contact.vue";
 import EditDisplayName from "@/components/local-servers/dialogs/EditDisplayName.vue";
+import EditComment from "@/components/local-servers/dialogs/EditComment.vue";
 
 const toLower = text => {
   return text.toString().toLowerCase();
@@ -163,6 +180,7 @@ const filterServers = (items, term) => {
       /** Look for term in item properties */
       return items.filter(
         item =>
+          toLower(item.comment || '').includes(term) ||
           toLower(item.macAddress).includes(term) ||
           toLower(item.displayName).includes(term) ||
           (item.platform && toLower(item.platform).includes(term)) ||
@@ -196,7 +214,8 @@ export default {
     KeyGenerator,
     ValidUsers,
     Contact,
-    EditDisplayName
+    EditDisplayName,
+    EditComment
   },
   data() {
     return {
@@ -206,6 +225,7 @@ export default {
       validUsersServerDialog: false,
       contactServerDialog: false,
       editNameDialog: false,
+      editCommentDialog: false,
       selectedServer: {},
       search: null,
       servers: [],
@@ -225,6 +245,7 @@ export default {
       this.validUsersServerDialog = false;
       this.contactServerDialog = false;
       this.editNameDialog = false;
+      this.editCommentDialog = false;
 
       if (requireRefresh) {
         await this.getServers();
