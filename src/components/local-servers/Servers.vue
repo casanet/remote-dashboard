@@ -30,28 +30,18 @@
       <contact :localServer="selectedServer" @finished="onDialogClosed" />
     </md-dialog>
     <!-- Remove local server dialog -->
-    <md-dialog-confirm
-      :md-active.sync="removeServerDialog"
+    <md-dialog-confirm :md-active.sync="removeServerDialog"
       :md-title="'Remove ' + (selectedServer ? selectedServer.displayName : '')"
-      md-content="Are you sure you want to permanently remove local server ?"
-      md-confirm-text="Remove"
-      md-cancel-text="Cancel"
-      @md-confirm="onConfirmRemove"
-    />
+      md-content="Are you sure you want to permanently remove local server ?" md-confirm-text="Remove"
+      md-cancel-text="Cancel" @md-confirm="onConfirmRemove" />
 
     <!-- Local servers card container -->
     <md-card class="md-elevation-4">
       <!-- Retriveing local servers loader animation -->
       <md-progress-bar v-if="loading" md-mode="query"></md-progress-bar>
       <!-- Local server table -->
-      <md-table
-        class="servers-table md-scrollbar"
-        v-model="searched"
-        md-sort="name"
-        md-sort-order="asc"
-        md-height="100%"
-        @md-selected="onSelect"
-      >
+      <md-table class="servers-table md-scrollbar" v-model="searched" md-sort="name" md-sort-order="asc"
+        md-height="100%" @md-selected="onSelect">
         <!-- Table toolbar -->
         <md-table-toolbar>
           <!-- Create new local server button -->
@@ -72,26 +62,22 @@
           </md-field>
         </md-table-toolbar>
 
-        <md-empty-state
-          v-if="!loading"
-          md-description="There is no local server that mtachs your query, create and link the new one if you need"
-        >
-          <md-button
-            class="md-primary md-raised"
-            @click="createServerDialog = true"
-          >Create a new server</md-button>
+        <md-empty-state v-if="!loading"
+          md-description="There is no local server that mtachs your query, create and link the new one if you need">
+          <md-button class="md-primary md-raised" @click="createServerDialog = true">Create a new server</md-button>
         </md-empty-state>
 
         <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single">
           <md-table-cell md-label="Status" md-sort-by="connectionStringStatus">
             <div v-if="item.connectionStringStatus === 'true'">
               ✔️
-              <md-tooltip md-direction="bottom">Connected At {{ item.lastConnection }}</md-tooltip>
             </div>
             <div v-else>
               ❗
-              <md-tooltip md-direction="bottom">Disconnected At {{ item.lastDisconnection }}</md-tooltip>
             </div>
+            <md-tooltip md-direction="bottom">
+              Last connection time {{ item.lastConnection }}, Last disconnection time {{ item.lastDisconnection }}
+            </md-tooltip>
           </md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="displayName">
             <div class="md-layout md-gutter md-alignment-center-space-between">
@@ -123,9 +109,8 @@
               <div class="md-layout-item md-size-10">
                 <md-button class="md-icon-button md-raised" @click="validUsersServerDialog = true">
                   <md-icon>supervisor_account</md-icon>
-                  <md-tooltip
-                    md-direction="bottom"
-                  >Show & edit the '{{ item.displayName }}' valid forward users</md-tooltip>
+                  <md-tooltip md-direction="bottom">Show & edit the '{{ item.displayName }}' valid forward users
+                  </md-tooltip>
                 </md-button>
               </div>
             </div>
@@ -187,8 +172,8 @@ const filterServers = (items, term) => {
           (item.version && toLower(item.version).includes(term)) ||
           (item.validUsers &&
             0 <
-              item.validUsers.filter(user => toLower(user).includes(term))
-                .length)
+            item.validUsers.filter(user => toLower(user).includes(term))
+              .length)
       );
     }
   } catch (error) {
