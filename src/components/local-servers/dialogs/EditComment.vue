@@ -8,13 +8,15 @@
       <md-card-content>
         <md-field :class="getValidationClass()">
           <label for="comment">The Comment</label>
-          <md-input
+          <!-- <md-textarea v-model="generatedKey" readonly></md-textarea> -->
+          <md-textarea
             name="comment"
             id="comment"
             v-model="comment"
             :disabled="sending"
           />
           <span class="md-error" v-if="!$v.comment.required">The comment is required</span>
+          <span class="md-error" v-if="!$v.comment.maxLength">The comment max length is 1000</span>
 
           <md-button
             class="md-icon-button md-list-action"
@@ -40,7 +42,7 @@
 import restResource from "../../../services/rest-resource";
 
 import { validationMixin } from "vuelidate";
-import { required } from "vuelidate/lib/validators";
+import { required, maxLength } from "vuelidate/lib/validators";
 
 export default {
   name: "EditComment",
@@ -54,7 +56,8 @@ export default {
   }),
   validations: {
     comment: {
-      required
+      required,
+      maxLength: maxLength(1000)
     }
   },
   methods: {
