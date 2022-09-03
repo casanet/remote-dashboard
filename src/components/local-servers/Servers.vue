@@ -37,7 +37,7 @@
 
     <!-- Local servers card container -->
     <md-card class="md-elevation-4">
-      <!-- Retriveing local servers loader animation -->
+      <!-- Retrieving local servers loader animation -->
       <md-progress-bar v-if="loading" md-mode="query"></md-progress-bar>
       <!-- Local server table -->
       <md-table class="servers-table md-scrollbar" v-model="searched" md-sort="name" md-sort-order="asc"
@@ -129,8 +129,8 @@
             </md-button>
           </md-table-cell>
           <md-table-cell md-label="Fetch logs">
-            <md-button class="md-icon-button md-raised" @click="onDownloadLogs(item)">
-              <md-icon>get_app</md-icon>
+            <md-button :disabled="item.macAddress === loadingMachineLogs" class="md-icon-button md-raised" @click="onDownloadLogs(item)">
+              <md-icon>{{item.macAddress === loadingMachineLogs ? 'loop' : 'get_app'}}</md-icon>
               <md-tooltip md-direction="bottom">Fetch the '{{ item.displayName }}' logs</md-tooltip>
             </md-button>
           </md-table-cell>
@@ -216,7 +216,8 @@ export default {
       search: null,
       servers: [],
       searched: [],
-      loading: false
+      loading: false,
+      loadingMachineLogs: '',
     };
   },
   created() {
@@ -287,11 +288,13 @@ export default {
       }
     },
     async onDownloadLogs(server) {
+      this.loadingMachineLogs = server.macAddress;
       try {
         await restResource.downloadLogs(server);
       } catch (error) {
         this.$snotify.error("The local server logs download failed");
       }
+      this.loadingMachineLogs = '';
     }
   }
 };
