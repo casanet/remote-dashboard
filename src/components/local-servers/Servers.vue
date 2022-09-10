@@ -104,7 +104,7 @@
           <md-table-cell md-label="Physical address" md-sort-by="macAddress">{{ item.macAddress }}</md-table-cell>
           <md-table-cell md-label="Version" md-sort-by="version">{{ item.version }}</md-table-cell>
           <md-table-cell md-label="Platform" md-sort-by="platform">{{ item.platform }}</md-table-cell>
-          <md-table-cell md-label="Local IP" >{{ item.localIp || '-' }}</md-table-cell>
+          <md-table-cell md-label="Local FQDN" >{{ item.localIp || '-' }}</md-table-cell>
           <md-table-cell md-label="Forward users">
             <div class="md-layout md-gutter md-alignment-center-space-between">
               <div class="md-layout-item md-size-10">
